@@ -1,0 +1,5 @@
+metabase.hieumeo.shop {
+    reverse_proxy metabase:3000 {
+      flush_interval -1
+    }
+}

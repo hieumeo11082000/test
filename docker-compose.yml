@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      # - /Caddyfile:/etc/caddy/Caddyfile
+      - root/metabse/caddy_config/Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - external
+      - internal
+
+  metabase:
+    image: metabase/metabase
+    restart: always
+    environment:
+      MB_DB_TYPE: '${DB_TYPE}'
+      MB_DB_DBNAME: '${DB_NAME}'
+      MB_DB_FILE: '${MB_DB_FILE}'
+      MB_DB_PORT: '${DB_PORT}'
+      MB_DB_USER: '${DB_USER}'
+      MB_DB_HOST: '${DB_HOST}'
+      MB_DB_PASS: '${DB_PASSWORD}'
+      JAVA_TIMEZONE: '${MB_JAVA_TIMEZONE}'
+    ports:
+      # <Port exposed>:<Port running inside container>
+      - '${MB_PORT}:3000'
+    volumes:
+      # Volumes where Metabase data will be persisted
+      - 'mb-data:/metabase-data'
+    networks:
+      internal:
+        ipv4_address: 192.168.224.2
+
+networks:
+  external:
+    external: false
+  internal:
+    external: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.224.0/24
+          gateway: 192.168.224.1
+
+volumes:
+  mb-data:
+  caddy_data:
+  caddy_config:
