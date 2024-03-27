@@ -24,6 +24,7 @@ services:
       MB_DB_USER: '${DB_USER}'
       MB_DB_HOST: '${DB_HOST}'
       MB_DB_PASS: '${DB_PASSWORD}'
+      MB_JETTY_HOST: '${MB_JETTY_HOST}'
       JAVA_TIMEZONE: '${MB_JAVA_TIMEZONE}'
     ports:
       # <Port exposed>:<Port running inside container>
