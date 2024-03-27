@@ -2,19 +2,16 @@ version: '3.8'
 
 services:
   caddy:
-    image: caddy:2-alpine
+    image: caddy:latest
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - caddy_data:/data
-      - caddy_config:/config
+      - ./caddy_config:/config
       # - /Caddyfile:/etc/caddy/Caddyfile
-      - root/metabse/caddy_config/Caddyfile:/etc/caddy/Caddyfile
-    networks:
-      - external
-      - internal
+      - ./caddy_config/Caddyfile:/etc/caddy/Caddyfile
 
   metabase:
     image: metabase/metabase
@@ -34,22 +31,10 @@ services:
     volumes:
       # Volumes where Metabase data will be persisted
       - 'mb-data:/metabase-data'
-    networks:
-      internal:
-        ipv4_address: 192.168.224.2
-
-networks:
-  external:
-    external: false
-  internal:
-    external: false
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.224.0/24
-          gateway: 192.168.224.1
 
 volumes:
   mb-data:
+     external: true 
   caddy_data:
+    external: true 
   caddy_config:
